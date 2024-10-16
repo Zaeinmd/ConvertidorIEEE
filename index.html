@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEEE 754</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Conversor de Números Reales a IEEE 754</h2>
+        <form id="convertForm">
+            <label for="realNumber">Introduce un número real:</label>
+            <input type="number" id="realNumber" step="any" required>
+            <button type="submit">Convertir</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("convertForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const realNumber = parseFloat(document.getElementById("realNumber").value);
+            const ieee754 = convertToIEEE754(realNumber);
+            const process = showConversionProcess(realNumber);
+            document.getElementById("result").innerHTML = `
+                <h3>Resultado</h3>
+                <p>Valor en IEEE 754 (32-bit): <strong>${ieee754}</strong></p>
+                <h3>Proceso de conversión:</h3>
+                <p>${process}</p>
+            `;
+        });
+
+        function convertToIEEE754(number) {
+            const buffer = new ArrayBuffer(4); // Creamos un buffer de 4 bytes (32 bits)
+            const floatView = new Float32Array(buffer);
+            floatView[0] = number; // Asignamos el número real
+
+            const intView = new Uint32Array(buffer); // Convertimos a entero sin signo para manipular bits
+            return intView[0].toString(2).padStart(32, '0'); // Devolvemos la representación binaria de 32 bits
+        }
+
+        function showConversionProcess(number) {
+            const sign = number < 0 ? 1 : 0; // Calculamos el signo
+            const absNumber = Math.abs(number);
+            const exponent = Math.floor(Math.log2(absNumber)); // Calculamos el exponente
+            const mantissa = absNumber / Math.pow(2, exponent) - 1; // Calculamos la mantisa
+
+            const exponentWithBias = (exponent + 127).toString(2).padStart(8, '0'); // Exponente con bias
+            const mantissaBits = (mantissa.toString(2).substring(2) + '00000000000000000000000').substring(0, 23); // Mantisa en 23 bits
+
+            // Mostrar proceso
+            return `
+                <strong>Signo (1 bit):</strong> ${sign} (0 para positivo, 1 para negativo)<br>
+                <strong>Exponente (8 bits):</strong> ${exponentWithBias} (valor real del exponente: ${exponent}, con bias de 127)<br>
+                <strong>Mantisa (23 bits):</strong> ${mantissaBits} (la parte fraccionaria de ${mantissa.toFixed(23)})<br>
+            `;
+        }
+    </script>
+</body>
+</html>
