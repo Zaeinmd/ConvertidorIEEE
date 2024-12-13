@@ -26,3 +26,24 @@ Después, convierte ese número en un entero sin signo usando ```Uint32Array``` 
 
 4. Mostrar el resultado:
 Después de la conversión, el resultado se muestra dentro del contenedor ```<div id="result">```, mostrando tanto la representación binaria de 32 bits como el proceso detallado de conversión.
+
+## Descripción del Proceso de Conversión:
+  - Signo (1 bit): Indica si el número es positivo o negativo.
+  * Exponente (8 bits): Calculado con un sesgo (bias) de 127, lo que permite representar exponentes negativos.
+  + Mantisa (23 bits): La parte fraccionaria del número, representada en formato binario.
+
+## Ejemplo:
+Si el usuario introduce el número ```3.75```, el proceso de conversión generará lo siguiente:
+
+  - Signo: ```0``` (número positivo).
+  * Exponente: ```129``` (en binario: 10000001, con un sesgo de 127).
+  + Mantisa: ```11100000000000000000000``` (la parte fraccionaria del número ```3.75``` convertida a binario).
+    
+El resultado final en IEEE 754 de 32 bits será:
+```bash
+0 10000001 11100000000000000000000
+```
+
+## Conclusión
+Este código HTML+JavaScript proporciona una interfaz de usuario interactiva para convertir números reales a su formato IEEE 754 de 32 bits. Muestra tanto el valor binario final como el proceso detallado, permitiendo a los usuarios entender cómo se realiza la conversión de punto flotante.
+
